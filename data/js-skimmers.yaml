@@ -1,0 +1,42 @@
+# Static body-pattern list for JS skimmer / C2-panel content detection.
+# Pattern strings only — no probing logic ships here.
+# Sources: shadow (C2-panel indicators), payment-cut context (skimmer markers).
+version: 1
+
+c2_panel_paths:
+  - /panel
+  - /c2
+  - /admin/c2
+  - /dashboard
+  - /admin/dashboard
+  - /c2panel
+  - /c2-admin
+  - /c2/dashboard
+  - /server/panel
+  - /control
+  - /command
+  - /admin/panel
+  - /management
+  - /api/c2
+  - /api/panel
+  - /server/control
+  - /c2/control
+
+c2_panel_body_indicators:
+  - c2 panel
+  - command & control
+  - c&c
+  - c2 server
+  - beacon
+  - botnet
+  - listener
+  - stager
+  - implant
+
+skimmer_markers:
+  - magecart
+  - card-skimmer
+  - form.action=atob
+  - btoa(document.forms
+  - onsubmit=atob
+  - payment-form-exfil

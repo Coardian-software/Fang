@@ -1,0 +1,37 @@
+# Go
+/bin/
+/obj/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build output
+/fang
+/dist/
+/build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test policy: tests live ONLY locally, never hosted in this repo
+*_test.go
+**/testdata/
+.githooks/
+core
+*.out
+
+# Local tooling
+/.omo/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local-only conformance harness (never hosted)
+/_harness/

@@ -1,0 +1,26 @@
+# ML-infrastructure dashboard exposure paths (GET detection only).
+# Source: dataphantom module (poisoning/POST probes intentionally dropped).
+version: 1
+
+dashboards:
+  - name: MLFlow
+    paths: [/, /mlflow, /api/2.0/mlflow]
+    indicators: [mlflow, experiment, run]
+  - name: Kubeflow
+    paths: [/, /kubeflow, /pipeline]
+    indicators: [kubeflow, pipeline]
+  - name: Jupyter
+    paths: [/, /jupyter, /notebook, /lab, /tree]
+    indicators: [jupyter, notebook, ipython]
+  - name: SageMaker
+    paths: [/, /sagemaker, /api/sagemaker]
+    indicators: [sagemaker]
+  - name: LabelStudio
+    paths: [/, /label-studio, /api/projects]
+    indicators: [label-studio, labelstudio]
+
+model_endpoints:
+  - /model
+  - /models
+  - /api/model
+  - /v1/models

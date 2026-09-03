@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  fang:
+    build: .
+    container_name: fang
+    restart: unless-stopped
+    entrypoint: ["./fang", "serve"]
+    volumes:
+      - fang_data:/home/fang/.fang
+    environment:
+      - FANG_DB_PATH=/home/fang/.fang/data/fang.db
+
+volumes:
+  fang_data:

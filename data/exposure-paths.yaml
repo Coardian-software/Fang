@@ -1,0 +1,188 @@
+# Content-discovery + exotic-exposure path and indicator lists.
+# Sources: devnull (manifest discovery), sdr, rfid, wifi, android, ios.
+version: 1
+
+dependency_manifests:
+  paths:
+    - /package.json
+    - /package-lock.json
+    - /requirements.txt
+    - /Pipfile
+    - /Gemfile
+    - /Gemfile.lock
+    - /go.mod
+    - /go.sum
+    - /Cargo.toml
+    - /Cargo.lock
+    - /composer.json
+    - /composer.lock
+    - /build.gradle
+    - /pom.xml
+    - /yarn.lock
+    - /webpack.config.js
+    - /.env
+    - /.env.example
+  body_indicators: [dependency, require, import, devDependencies, dependencies]
+
+sdr_radio:
+  paths:
+    - /sdr
+    - /radio
+    - /gnuradio
+    - /usrp
+    - /hackrf
+    - /rtl-sdr
+    - /rtlsdr
+    - /sdr/status
+    - /radio/status
+    - /api/sdr
+    - /api/radio
+    - /iq
+    - /waterfall
+    - /fft
+    - /spectrum
+    - /sdr/waterfall
+  indicators: [sdr, software defined radio, gnuradio, usrp, hackrf, rtl-sdr, rtlsdr, center_freq, sample_rate, iq, waterfall, fft, spectrum, gain, lna]
+  strong_markers: [center_freq, sample_rate]
+
+sdr_adsb:
+  paths:
+    - /adsb
+    - /dump1090
+    - /ads-b
+    - /adsb/exchange
+    - /dump1090/data.json
+    - /dump1090/data/aircraft.json
+    - /skyaware
+    - /tar1090
+    - /adsb/status
+    - /api/adsb
+    - /data/aircraft.json
+  indicators: [hex, altitude, squawk, adsb, dump1090, aircraft]
+
+sdr_gps:
+  paths:
+    - /gps
+    - /location
+    - /api/gps
+    - /api/location
+    - /gps/data
+    - /gps/coordinates
+    - /geolocation
+    - /position
+    - /api/position
+    - /coordinates
+  indicators: [latitude, longitude, altitude, gps, coordinates, satellite, hdop, speed_over_ground, true_course]
+
+sdr_config:
+  paths:
+    - /sdr/config
+    - /radio/config
+    - /api/sdr/config
+    - /sdr/settings
+    - /gnuradio/config
+    - /config/sdr
+    - /api/radio/settings
+    - /radio/info
+  indicators: [center_freq, sample_rate, rf_gain, lna_gain, bandwidth, freq_correction, ppm, antenna, decimation, tuner, if_gain, bb_gain, mixer_gain]
+
+rfid_readers:
+  paths:
+    - /rfid
+    - /nfc
+    - /tag
+    - /tags
+    - /api/rfid
+    - /api/nfc
+    - /rfid/read
+    - /nfc/read
+    - /rfid/status
+    - /rfid/tags
+    - /rfid/info
+    - /reader
+    - /readers
+    - /tag-reader
+    - /card-reader
+    - /rfid-reader
+    - /reader/config
+    - /access/reader
+    - /door/reader
+
+wifi_interfaces:
+  paths:
+    - /wifi
+    - /api/wifi
+    - /wifi/config
+    - /wifi/status
+    - /wireless
+    - /api/wireless
+    - /wlan
+    - /api/wlan
+    - /network/wifi
+    - /router/wifi
+    - /config/wifi
+    - /api/v1/wifi
+    - /api/v2/wifi
+    - /system/wifi
+    - /wifi/settings
+    - /wifi/scan
+    - /wifi/networks
+    - /api/network/wifi
+    - /rest/wifi
+  wifi_config_files:
+    - /wpa_supplicant.conf
+    - /wpa_supplicant.conf.bak
+    - /etc/NetworkManager/system-connections/
+    - /wireless.config
+    - /wifi.conf
+    - /hostapd.conf
+    - /etc/wpa_supplicant/wpa_supplicant.conf
+    - /config/wireless
+    - /router/config/wireless
+    - /backup/wifi.conf
+    - /backup/wpa_supplicant.conf
+  captive_portal_paths:
+    - /captive
+    - /captive-portal
+    - /portal
+    - /api/captive
+    - /captiveportal
+    - /hotspot
+    - /portal-login
+    - /api/portal
+  captive_probe_paths:
+    - /generate_204
+    - /gen_204
+    - /ncsi.txt
+    - /connecttest.txt
+    - /hotspot-detect.html
+    - /library/test/success.html
+  wps_paths:
+    - /wps
+    - /api/wps
+    - /wps/config
+    - /router/wps
+    - /config/wps
+    - /wps/pin
+    - /wps/status
+    - /api/v1/wps
+    - /api/router/wps
+
+mobile_artifacts:
+  android:
+    paths:
+      - /AndroidManifest.xml
+      - /manifest.xml
+      - /android/AndroidManifest.xml
+      - /app/AndroidManifest.xml
+      - /application/AndroidManifest.xml
+    debug_indicators: [debug, dev, test, staging, beta]
+  ios:
+    paths:
+      - /info.plist
+      - /manifest.plist
+      - /ios.ipa
+      - /app.ipa
+      - /ios.mobileprovision
+      - /ios.plist
+    crash_indicators: [crashlytics, fabric, crash, exception]
