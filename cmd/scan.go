@@ -31,6 +31,10 @@ var scanRunCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		target := args[0]
+
+		if t, err := db.GetTarget(target); err == nil && t.URL != "" {
+			target = t.URL
+		}
 		modules, _ := cmd.Flags().GetStringSlice("modules")
 		threads, _ := cmd.Flags().GetInt("threads")
 		timeout, _ := cmd.Flags().GetInt("timeout")
@@ -45,6 +49,9 @@ var scanRunCmd = &cobra.Command{
 		format, _ := cmd.Flags().GetString("format")
 		ciMode, _ := cmd.Flags().GetBool("ci")
 		failOn, _ := cmd.Flags().GetString("fail-on")
+		if err := validateProfile(profile); err != nil {
+			return err
+		}
 
 		if format != "" && !report.IsValidFormat(format) {
 			return fmt.Errorf("unknown format %q (valid: %s)", format, strings.Join(report.ValidFormats(), ", "))
@@ -105,12 +112,14 @@ var scanRunCmd = &cobra.Command{
 			}
 		}
 
+		// Keep the persisted scan metadata aligned with the effective module set.
+		effectiveModules := cfg.Modules
 		targetID, err := db.CreateTarget(target, "", "", "", "")
 		if err != nil {
 			return fmt.Errorf("create target: %w", err)
 		}
 
-		scanID, err := db.CreateScan(targetID, modules, cfg.Threads, int(cfg.Timeout.Seconds()), proxy, "cli", "")
+		scanID, err := db.CreateScan(targetID, effectiveModules, cfg.Threads, int(cfg.Timeout.Seconds()), proxy, "cli", "")
 		if err != nil {
 			return fmt.Errorf("create scan: %w", err)
 		}
@@ -131,18 +140,12 @@ var scanRunCmd = &cobra.Command{
 		scanCtx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 		defer cancel()
 
-		interrupted := false
 		sigCtx, sigStop := signal.NotifyContext(scanCtx, os.Interrupt, syscall.SIGTERM)
 		defer sigStop()
-		go func() {
-			<-sigCtx.Done()
-			if errors.Is(sigCtx.Err(), context.Canceled) && scanCtx.Err() == nil {
-				interrupted = true
-			}
-		}()
 
 		eng := engine.New(cfg)
-		result, err := eng.Run(scanCtx, target)
+		result, err := eng.Run(sigCtx, target)
+		interrupted := errors.Is(sigCtx.Err(), context.Canceled) && scanCtx.Err() == nil
 		if err != nil {
 			reason := err.Error()
 			if interrupted {
@@ -152,7 +155,20 @@ var scanRunCmd = &cobra.Command{
 			return fmt.Errorf("scan: %w", err)
 		}
 
-		db.UpdateScanStatus(scanID, "completed", "")
+		if scanCtx.Err() != nil {
+			reason := scanCtx.Err().Error()
+			status := "failed"
+			if interrupted {
+				status = "cancelled"
+				reason = "interrupted"
+			}
+			_ = db.UpdateScanStatus(scanID, status, reason)
+			return fmt.Errorf("scan %s: %s", status, reason)
+		}
+
+		if err := db.UpdateScanStatus(scanID, "completed", ""); err != nil {
+			return fmt.Errorf("complete scan: %w", err)
+		}
 
 		if !flagQuiet {
 			pigment.New().Fg("#50fa7b").Fprintf(os.Stderr, "scan completed: %d findings\n", len(result.Findings))

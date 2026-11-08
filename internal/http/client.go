@@ -175,11 +175,20 @@ func (c *Client) executeRequest(req *Request) (*Response, error) {
 	}
 	defer httpResp.Body.Close()
 
-	bodyBytes, err := io.ReadAll(httpResp.Body)
+	limit := c.config.MaxResponseBytes
+	if limit <= 0 {
+		limit = 10 * 1024 * 1024
+	}
+	bodyBytes, err := io.ReadAll(io.LimitReader(httpResp.Body, limit+1))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
 	}
 	bodyStr := string(bodyBytes)
+	bodyTruncated := int64(len(bodyBytes)) > limit
+	if bodyTruncated {
+		bodyBytes = bodyBytes[:limit]
+		bodyStr = string(bodyBytes)
+	}
 
 	if c.jar != nil {
 		c.jar.SetCookies(httpReq, httpResp.Cookies())
@@ -200,15 +209,16 @@ func (c *Client) executeRequest(req *Request) (*Response, error) {
 	}
 
 	response := &Response{
-		StatusCode: httpResp.StatusCode,
-		Status:     httpResp.Status,
-		Headers:    httpResp.Header,
-		Body:       bodyStr,
-		BodyBytes:  bodyBytes,
-		BodyLength: len(bodyBytes),
-		URL:        respURL,
-		Redirect:   redirect,
-		Duration:   duration,
+		StatusCode:    httpResp.StatusCode,
+		Status:        httpResp.Status,
+		Headers:       httpResp.Header,
+		Body:          bodyStr,
+		BodyBytes:     bodyBytes,
+		BodyLength:    len(bodyBytes),
+		BodyTruncated: bodyTruncated,
+		URL:           respURL,
+		Redirect:      redirect,
+		Duration:      duration,
 		Request: &RequestInfo{
 			Method:  req.Method,
 			URL:     req.URL,

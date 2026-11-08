@@ -7,41 +7,51 @@ import (
 )
 
 type Config struct {
-	Timeout         time.Duration
-	MaxRetries      int
-	RetryDelay      time.Duration
-	MaxConcurrency  int
-	RateLimit       int
-	Proxy           string
-	ProxyAuth       string
-	SOCKS5          string
-	FollowRedirects bool
-	MaxRedirects    int
-	MaxIdleConns    int
-	IdleConnTimeout time.Duration
-	TLSInsecure     bool
-	TLSCipherSuites []uint16
-	UserAgent       string
-	Headers         map[string]string
-	Cookies         []*models.Cookie
+	Timeout          time.Duration
+	MaxRetries       int
+	RetryDelay       time.Duration
+	MaxConcurrency   int
+	RateLimit        int
+	Proxy            string
+	ProxyAuth        string
+	SOCKS5           string
+	FollowRedirects  bool
+	MaxRedirects     int
+	MaxIdleConns     int
+	IdleConnTimeout  time.Duration
+	TLSInsecure      bool
+	TLSCipherSuites  []uint16
+	UserAgent        string
+	Headers          map[string]string
+	Cookies          []*models.Cookie
+	MaxResponseBytes int64
 }
 
 type Option func(*Config)
 
 func defaultConfig() *Config {
 	return &Config{
-		Timeout:         10 * time.Second,
-		MaxRetries:      2,
-		RetryDelay:      500 * time.Millisecond,
-		MaxConcurrency:  20,
-		RateLimit:       50,
-		FollowRedirects: false,
-		MaxRedirects:    5,
-		MaxIdleConns:    100,
-		IdleConnTimeout: 30 * time.Second,
-		TLSInsecure:     false,
-		UserAgent:       "Fang/1.0 (Security Scanner)",
-		Headers:         make(map[string]string),
+		Timeout:          10 * time.Second,
+		MaxRetries:       2,
+		RetryDelay:       500 * time.Millisecond,
+		MaxConcurrency:   20,
+		RateLimit:        50,
+		FollowRedirects:  false,
+		MaxRedirects:     5,
+		MaxIdleConns:     100,
+		IdleConnTimeout:  30 * time.Second,
+		TLSInsecure:      false,
+		UserAgent:        "Fang/1.0 (Security Scanner)",
+		MaxResponseBytes: 10 * 1024 * 1024,
+		Headers:          make(map[string]string),
+	}
+}
+
+func WithMaxResponseBytes(n int64) Option {
+	return func(c *Config) {
+		if n > 0 {
+			c.MaxResponseBytes = n
+		}
 	}
 }
 

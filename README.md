@@ -34,7 +34,7 @@ cd fang
 make install
 ```
 
-Requirements: Go 1.25 or newer. MIT licensed. See SECURITY.md for reporting vulnerabilities in Fang itself.
+Requirements: Go 1.26 or newer. MIT licensed. See SECURITY.md for reporting vulnerabilities in Fang itself.
 
 ## Quickstart
 
@@ -103,6 +103,6 @@ make quality      # build + vet + staticcheck (tests run locally only, never in 
 git config core.hooksPath .githooks   # enables the pre-push hook (gofmt, vet, staticcheck, govulncheck)
 ```
 
-Fang hosts zero test files in this repository by policy. Tests live in the maintainer's local tree and quality gates run locally before push. See TESTS.md for the full policy and CONTRIBUTING.md for how to submit changes.
+Tests are maintained in this repository and run in CI. Keep fixtures synthetic and never commit customer targets, scan reports, credentials, or production response data. See TESTS.md for the test scope and CONTRIBUTING.md for contribution requirements.
 
-CI runs: `go vet`, `staticcheck`, `gofmt` check, and `govulncheck` — no test jobs.
+CI runs formatting, `go vet`, unit/integration tests, race tests, `govulncheck`, build, and a Docker startup smoke test.

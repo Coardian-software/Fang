@@ -17,6 +17,7 @@ builds:
       - arm64
     ldflags:
       - -s -w
+      - -X github.com/aydocs/fang/cmd.Version={{.Version}}
 
 archives:
   - id: fang

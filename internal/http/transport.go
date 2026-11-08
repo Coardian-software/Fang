@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"time"
 
-	"golang.org/x/net/http2"
 	"golang.org/x/net/proxy"
 )
 
@@ -36,10 +35,6 @@ func NewTransport(cfg *Config) *http.Transport {
 
 	if len(cfg.TLSCipherSuites) > 0 {
 		transport.TLSClientConfig.CipherSuites = cfg.TLSCipherSuites
-	}
-
-	if err := http2.ConfigureTransport(transport); err != nil {
-		transport.ForceAttemptHTTP2 = false
 	}
 
 	if cfg.Proxy != "" {

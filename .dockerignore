@@ -5,3 +5,10 @@ plan/
 web/node_modules
 web/src
 .tool*
+_harness/
+fang
+.fang/
+POYRAZ_HOSTING_RAPOR.md
+poyrazhosting_findings.csv
+poyrazhosting_findings.json
+poyrazhosting_table.txt

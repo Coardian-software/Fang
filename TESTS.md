@@ -1,19 +1,19 @@
 # Testing Policy
 
-Fang hosts **zero** test files in this repository — by design.
+Tests are first-class repository artifacts. They use synthetic HTTP servers
+and fixtures only; customer targets, reports, credentials, and real response
+data stay outside the repository.
 
-- All `*_test.go` and `testdata/` live only in the maintainer's local working
-  tree and are excluded via `.gitignore`.
-- Quality gates run **locally** before every push:
+- Quality gates run locally and in CI:
   - `make quality` (build + vet + tests)
   - `make conformance` (module-contract harness)
   - the `.githooks/pre-push` hook enforces gofmt + vet + staticcheck + tests
     automatically (`git config core.hooksPath .githooks` is required once after
     clone).
-- CI (GitHub Actions) runs lint, govulncheck, and build only.
+- CI also runs unit tests, race tests, dependency scanning, build, and Docker
+  startup smoke tests.
 
 ## Contributing
 
-Pull requests should include a **reproduction recipe** (target behavior,
-command line used, observed vs expected output) instead of test files — any
-test-shaped file in a PR will be rejected by policy.
+Pull requests should include a focused regression test and a **reproduction
+recipe** (target behavior, command line used, observed vs expected output).

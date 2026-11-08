@@ -1,4 +1,4 @@
-.PHONY: all build clean test lint fmt install quality conformance
+.PHONY: all build clean test lint fmt install quality conformance security docker-smoke
 
 BINARY=fang
 
@@ -26,8 +26,14 @@ install:
 dev:
 	go run . --help
 
-# Local-only quality gates; tests are never hosted in this repo.
 quality: build lint test
+
+security:
+	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+docker-smoke:
+	docker build --tag fang:smoke .
+	docker run --rm fang:smoke --help >/dev/null
 
 conformance:
 	go run ./_harness

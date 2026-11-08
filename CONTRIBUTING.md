@@ -4,7 +4,7 @@ Thanks for wanting to help. This document covers what a good contribution looks 
 
 ## Setup
 
-You need Go 1.21 or newer. No Node.js, no frontend, no other toolchains.
+You need Go 1.26 or newer. No Node.js, no frontend, no other toolchains.
 
 ```bash
 git clone https://github.com/aydocs/fang.git
@@ -19,18 +19,16 @@ Enable the pre-push hook once after cloning:
 git config core.hooksPath .githooks
 ```
 
-## Pull requests bring repro recipes, not test files
+## Pull requests include regression tests
 
-Fang hosts zero test files in this repository. All `*_test.go` files and `testdata/` live only in the maintainer's local working tree and are excluded via `.gitignore`. This is policy, not accident. See TESTS.md for the reasoning.
-
-When your change fixes or adds behavior, include a **reproduction recipe** in the PR description:
+When your change fixes or adds behavior, include a focused `*_test.go` regression test and a **reproduction recipe** in the PR description:
 
 - The target behavior or vulnerability class involved
 - The exact command line you ran (flags included)
 - Observed output before the change
 - Expected output after the change
 
-A test-shaped file (`*_test.go`, `testdata/`) in a PR will be rejected by policy. The maintainer converts accepted repro recipes into local tests on their side.
+Tests are part of the public contract and run in CI. Do not include real customer targets, scan reports, credentials, or production response data in fixtures.
 
 ## Local quality gates are required
 

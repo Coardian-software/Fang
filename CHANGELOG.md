@@ -19,7 +19,7 @@ All notable changes to Fang are documented in this file. The format follows Keep
 - Finding deduplication keyed on sha1(class|host|param|path).
 - Stable finding fingerprints (sha256-truncated) with first_seen, last_seen, occurrence counts, and an open/reopened/fixed lifecycle.
 - Incremental crash-safe persistence to SQLite.
-- Test-hosting policy: zero test files in the repository, local-only quality gates via `make quality` and the pre-push hook. See TESTS.md.
+- Public regression tests, race-test coverage, response-size limits, dependency security updates, and Docker runtime asset checks.
 
 ## [0.1.0]
 

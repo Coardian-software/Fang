@@ -62,7 +62,7 @@ func Load() (*AppConfig, error) {
 			cfg := Default()
 			config = cfg
 			if saveErr := saveLocked(); saveErr != nil {
-				return cfg, nil
+				return nil, fmt.Errorf("initialize config: %w", saveErr)
 			}
 			return cfg, nil
 		}

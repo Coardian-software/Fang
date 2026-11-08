@@ -39,7 +39,7 @@ var exportCmd = &cobra.Command{
 		}
 
 		data := ExportData{
-			Version:    "1.0.0",
+			Version:    Version,
 			ExportedAt: time.Now().Format(time.RFC3339),
 			Findings:   findings,
 			Scans:      scans,

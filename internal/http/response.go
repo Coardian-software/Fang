@@ -8,18 +8,19 @@ import (
 )
 
 type Response struct {
-	StatusCode int
-	Status     string
-	Headers    http.Header
-	Body       string
-	BodyBytes  []byte
-	BodyLength int
-	URL        string
-	Redirect   string
-	Cookies    []*models.Cookie
-	TLS        *TLSInfo
-	Duration   time.Duration
-	Request    *RequestInfo
+	StatusCode    int
+	Status        string
+	Headers       http.Header
+	Body          string
+	BodyBytes     []byte
+	BodyLength    int
+	BodyTruncated bool
+	URL           string
+	Redirect      string
+	Cookies       []*models.Cookie
+	TLS           *TLSInfo
+	Duration      time.Duration
+	Request       *RequestInfo
 }
 
 type RequestInfo struct {

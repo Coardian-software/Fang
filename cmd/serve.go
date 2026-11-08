@@ -25,18 +25,29 @@ var serveCmd = &cobra.Command{
 		}
 
 		home, _ := os.UserHomeDir()
-		dbPath := filepath.Join(home, ".fang", "data", "fang.db")
-		os.MkdirAll(filepath.Dir(dbPath), 0755)
+		dbPath := os.Getenv("FANG_DB_PATH")
+		if dbPath == "" {
+			dbPath = filepath.Join(home, ".fang", "data", "fang.db")
+		}
+		if err := os.MkdirAll(filepath.Dir(dbPath), 0700); err != nil {
+			return fmt.Errorf("serve: create db dir: %w", err)
+		}
 		cfg := db.DefaultConfig()
 		cfg.Path = dbPath
-		db.Open(cfg)
+		if _, err := db.Open(cfg); err != nil {
+			return fmt.Errorf("serve: open db: %w", err)
+		}
 		defer db.Close()
 
-		config.Load()
+		if _, err := config.Load(); err != nil {
+			return fmt.Errorf("serve: load config: %w", err)
+		}
 
 		pluginDir := filepath.Join(home, ".fang", "plugins")
 		pluginMgr := plugin.NewManager(pluginDir)
-		pluginMgr.LoadAll()
+		if err := pluginMgr.LoadAll(); err != nil {
+			return fmt.Errorf("serve: load plugins: %w", err)
+		}
 
 		pidPath := filepath.Join(home, ".fang", "serve.pid")
 		if err := writePIDFile(pidPath); err != nil {

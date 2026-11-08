@@ -19,8 +19,7 @@
 *.swo
 *~
 
-# Test policy: tests live ONLY locally, never hosted in this repo
-*_test.go
+# Tests are first-class repository artifacts.
 **/testdata/
 .githooks/
 core
@@ -35,3 +34,10 @@ Thumbs.db
 
 # Local-only conformance harness (never hosted)
 /_harness/
+
+# Local scan output must never enter a public commit.
+/POYRAZ_HOSTING_RAPOR.md
+/poyrazhosting_findings.csv
+/poyrazhosting_findings.json
+/poyrazhosting_table.txt
+/.fang/

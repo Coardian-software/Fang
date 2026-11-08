@@ -13,13 +13,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.26"
       - run: go vet ./...
-      - run: go run honnef.co/go/tools/cmd/staticcheck@v0.7.0 ./...
       - run: test -z "$(gofmt -l .)"
-      # Tests are intentionally NOT run in CI: this repository hosts zero test
-      # files by policy (see CONTRIBUTING.md). Quality gates run locally via
-      # `make quality` and the pre-push hook.
+      - run: go test ./... -count=1 -timeout 300s
+      - run: go test -race ./... -count=1 -timeout 300s
       - run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
   build:
@@ -28,5 +26,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.25"
+          go-version: "1.26"
       - run: go build ./...
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --tag fang:ci .
+      - run: docker run --rm fang:ci --help
